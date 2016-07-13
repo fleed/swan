@@ -23,11 +23,21 @@ namespace Swan.Core
             await this.WriteProgramAsync();
             await this.WriteStartupAsync();
             await this.WriteProjectJsonAsync();
-            foreach (var entity in this.Project.Entities)
+            foreach (var ns in this.Project.Namespaces)
             {
-                await this.WriteEntityAsync(entity);
-                await this.WriteDtoAsync(entity);
-                await this.WriteControllerAsync(entity);
+                foreach (var entity in ns.Entities)
+                {
+                    Log.Information("Writing entity {name}", entity.Name);
+                    await this.WriteEntityAsync(entity);
+                    await this.WriteRepositoryInterfaceAsync(entity);
+                    await this.WriteRepositoryAsync(entity);
+                    await this.WriteConversionExtensionsAsync();
+                    await this.WriteAppsettingsAsync();
+                    await this.WriteHostingAsync();
+                    await this.WriteDataContextAsync();
+                    await this.WriteDtoAsync(entity);
+                    await this.WriteControllerAsync(entity);
+                }
             }
         }
 
@@ -91,6 +101,102 @@ namespace Swan.Core
 
             var content = generator.Generate("DataController.cs", model);
             var outputPath = Path.Combine(directory, $"{model.Name}Controller.generated.cs");
+            await this.WriteFileAsync(outputPath, content);
+        }
+
+        private async Task WriteRepositoryInterfaceAsync(Entity entity)
+        {
+            var generator = new Generator();
+
+            var model = new DataControllerViewModel
+            {
+                Name = entity.Name,
+                Namespace = this.Project.Namespace + ".Data",
+                Route = "/api/v1/data/[controller]"
+            };
+            var directory = Path.Combine(this.BasePath, "Data");
+
+            var content = generator.Generate("IRepository.cs", model);
+            var outputPath = Path.Combine(directory, $"I{model.Name}Repository.generated.cs");
+            await this.WriteFileAsync(outputPath, content);
+        }
+
+        private async Task WriteRepositoryAsync(Entity entity)
+        {
+            var generator = new Generator();
+
+            var model = new DataControllerViewModel
+            {
+                Name = entity.Name,
+                Namespace = this.Project.Namespace + ".Data",
+                Route = "/api/v1/data/[controller]"
+            };
+            var directory = Path.Combine(this.BasePath, "Data");
+
+            var content = generator.Generate("Repository.cs", model);
+            var outputPath = Path.Combine(directory, $"{model.Name}Repository.generated.cs");
+            await this.WriteFileAsync(outputPath, content);
+        }
+
+        private async Task WriteConversionExtensionsAsync()
+        {
+            var generator = new Generator();
+
+            var model = new DataControllerViewModel
+            {
+                Namespace = this.Project.Namespace + ".Data",
+                Route = "/api/v1/data/[controller]"
+            };
+            var directory = Path.Combine(this.BasePath, "Data");
+
+            var content = generator.Generate("ConversionExtensions.cs", model);
+            var outputPath = Path.Combine(directory, "ConversionExtensions.generated.cs");
+            await this.WriteFileAsync(outputPath, content);
+        }
+
+        private async Task WriteDataContextAsync()
+        {
+            var generator = new Generator();
+
+            var model = new DataContextViewModel
+            {
+                Namespace = this.Project.Namespace + ".Entities",
+                Entities = {
+                    "MyEntity"
+                }
+            };
+            var directory = Path.Combine(this.BasePath, "Entities");
+
+            var content = generator.Generate("DataContext.cs", model);
+            var outputPath = Path.Combine(directory, "DataContext.generated.cs");
+            await this.WriteFileAsync(outputPath, content);
+        }
+
+        private async Task WriteAppsettingsAsync()
+        {
+            var generator = new Generator();
+
+            var model = new DataControllerViewModel
+            {
+                Namespace = this.Project.Namespace
+            };
+
+            var content = generator.Generate("appsettings.json", model);
+            var outputPath = Path.Combine(this.BasePath, "appsettings.json");
+            await this.WriteFileAsync(outputPath, content);
+        }
+
+        private async Task WriteHostingAsync()
+        {
+            var generator = new Generator();
+
+            var model = new DataControllerViewModel
+            {
+                Namespace = this.Project.Namespace
+            };
+
+            var content = generator.Generate("hosting.json", model);
+            var outputPath = Path.Combine(this.BasePath, "hosting.json");
             await this.WriteFileAsync(outputPath, content);
         }
 

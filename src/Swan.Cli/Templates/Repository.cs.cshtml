@@ -1,0 +1,42 @@
+@using Humanizer
+@model Swan.Generators.DataControllerViewModel
+namespace @this.Model.Namespace
+{
+    using System;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+
+    using Dto;
+    using DataContext = Entities.DataContext;
+    
+    public partial class @(this.Model.Name)Repository : I@(this.Model.Name)Repository
+    {
+        public @(this.Model.Name)Repository(DataContext dataContext)
+        {
+            this.DataContext = dataContext;
+        }
+
+        public DataContext DataContext { get; }
+
+        public async Task<@this.Model.Name> AddAsync(@this.Model.Name value)
+        {
+            var entry = this.DataContext.@(this.Model.Name.Pluralize()).Add(value.Convert());
+            await this.DataContext.SaveChangesAsync();
+            return entry.Entity.Convert();
+        }
+
+        public async Task<@this.Model.Name> GetAsync(Guid id)
+        {
+            return (await this.DataContext.@(this.Model.Name.Pluralize()).FirstOrDefaultAsync(e => e.Id == id))?.Convert();
+        }
+
+        public async Task<@this.Model.Name> UpdateAsync(@this.Model.Name value)
+        {
+            var existing = await this.DataContext.@(this.Model.Name.Pluralize()).FirstAsync(e => e.Id == value.Id);
+            var converted = value.Convert();
+            existing.LastModifiedOn = DateTime.UtcNow;
+            await this.DataContext.SaveChangesAsync();
+            return existing.Convert();
+        }
+    }
+}

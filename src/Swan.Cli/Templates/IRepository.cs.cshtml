@@ -1,0 +1,16 @@
+namespace @this.Model.Namespace
+{
+    using System;
+    using System.Threading.Tasks;
+
+    using Dto;
+
+    public interface I@(this.Model.Name)Repository
+    {
+        Task<@this.Model.Name> AddAsync(@this.Model.Name value);
+
+        Task<@this.Model.Name> GetAsync(Guid id); 
+
+        Task<@this.Model.Name> UpdateAsync(@this.Model.Name value); 
+    }
+}

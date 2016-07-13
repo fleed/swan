@@ -1,0 +1,4 @@
+@model string
+@using Humanizer
+
+        public DbSet<@this.Model> @this.Model.Pluralize() { get; set; }

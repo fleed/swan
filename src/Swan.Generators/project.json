@@ -7,10 +7,14 @@
   },
   "dependencies": {
     "NETStandard.Library": "1.6.0",
+    "Humanizer.Core": "2.1.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.Hosting": "1.0.0",
     "Microsoft.AspNetCore.Mvc.Razor": "1.0.0",
-    "Serilog": "2.0.0"
+    "Serilog": "2.0.0",
+    "Swan.Model": {
+      "target": "project"
+    }
   },
   "frameworks": {
     "netstandard1.6": {

@@ -32,9 +32,13 @@
             var project = new Project{
                 Namespace = "MyBuilderNamespace"
             };
-            project.Entities = new [] {
-                new Entity {
-                    Name = "MyEntity"
+            project.Namespaces = new [] {
+                    new Namespace {
+                        Entities = new [] {
+                            new Entity {
+                                Name = "MyEntity"
+                            }
+                    }
                 }
             };
             var builder = new ProjectBuilder(project)

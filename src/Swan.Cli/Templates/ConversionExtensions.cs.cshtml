@@ -1,0 +1,29 @@
+namespace @this.Model.Namespace
+{
+    using Entities;
+
+    using DtoMyEntity = Dto.MyEntity;
+
+    public static class ConvertionExtensions
+    {
+        public static MyEntity Convert(this DtoMyEntity value)
+        {
+            return new MyEntity
+            {
+                Id = value.Id,
+                CreatedOn = value.CreatedOn,
+                LastModifiedOn = value.LastModifiedOn
+            };
+        }
+
+        public static DtoMyEntity Convert(this MyEntity value)
+        {
+            return new DtoMyEntity
+            {
+                Id = value.Id,
+                CreatedOn = value.CreatedOn,
+                LastModifiedOn = value.LastModifiedOn
+            };
+        }
+    }
+}

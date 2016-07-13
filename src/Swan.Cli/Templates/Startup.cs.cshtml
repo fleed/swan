@@ -5,15 +5,36 @@ namespace @this.Model.Namespace
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Formatters.Json;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using Microsoft.EntityFrameworkCore;
+
+    using Serilog;
+
+    using Entities;
+    using Data;
 
     public class Startup
     {
+        public Startup()
+        {
+            this.Configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+        }
+
+        public IConfigurationRoot Configuration { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvcCore().AddJsonFormatters();
+            var connection = this.Configuration.GetConnectionString("Default");
+            services.AddDbContext<DataContext>(options => options.UseSqlite(connection));
+
+            services.AddScoped<IMyEntityRepository, MyEntityRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -21,7 +42,7 @@ namespace @this.Model.Namespace
         {
             //app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
-            //loggerFactory.AddConsole();
+            loggerFactory.AddSerilog();
             app.UseMvc();
         }
     }

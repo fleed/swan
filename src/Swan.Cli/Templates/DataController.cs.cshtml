@@ -12,19 +12,32 @@ namespace @this.Model.Namespace
     using System.Net;
 
     using Dto;
+    using Data;
 
     [Route("@this.Model.Route")]
     public partial class @(this.Model.Name)Controller : ControllerBase
     {
+        public @(this.Model.Name)Controller(I@(this.Model.Name)Repository repository)
+        {
+            this.Repository = repository;
+        }
+
+        public I@(this.Model.Name)Repository Repository { get; }
+
+        partial void OnAdd();
+
         partial void OnGet();
         
-        [HttpGet]
-        public async Task<IActionResult> GetAsync(@this.Model.KeyType id)
+        [HttpPost]
+        public async Task<IActionResult> AddAsync([FromBody]@this.Model.Name value)
         {
             try
             {
-                this.OnGet();
-                return this.Ok(new @(this.Model.Name)());
+                this.OnAdd();
+                value.CreatedOn = DateTime.UtcNow;
+                value.Version = 1;
+                var added = await this.Repository.AddAsync(value);
+                return this.Ok(added);
             }
             catch (Exception exception)
             {
@@ -33,13 +46,42 @@ namespace @this.Model.Namespace
             }
         }
         
-        [HttpPost]
-        public async Task<IActionResult> SetAsync(@this.Model.KeyType id, [FromBody]@this.Model.Name value)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAsync(@this.Model.KeyType id)
         {
             try
             {
                 this.OnGet();
-                return this.Ok("Understood, but not implemented");
+                var item = await this.Repository.GetAsync(id);
+                if (item == null)
+                {
+                    return this.NotFound($"Item with id '{id}' was not found");
+                }
+
+                return this.Ok(item);
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "Error while getting");
+                return this.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        
+        [HttpPut("{id}")]
+        public async Task<IActionResult> GetAsync(@this.Model.KeyType id, [FromBody]@this.Model.Name value)
+        {
+            try
+            {
+                this.OnGet();
+                var item = await this.Repository.GetAsync(id);
+                if (item == null)
+                {
+                    return this.NotFound($"Item with id '{id}' was not found");
+                }
+
+                value.Id = id;
+                var updated = await this.Repository.UpdateAsync(value);
+                return this.Ok(updated);
             }
             catch (Exception exception)
             {

@@ -1,0 +1,22 @@
+@using Humanizer
+@using Swan.Generators
+@model DataContextViewModel
+namespace @this.Model.Namespace
+{
+    using Microsoft.EntityFrameworkCore;
+
+    public partial class DataContext : DbContext
+    {
+        public DataContext(DbContextOptions<DataContext> options)
+            : base(options)
+        {
+        }
+        @{
+            foreach (var entity in this.Model.Entities)
+            {
+                await Html.RenderPartialAsync("DataContext.DbSet", entity);
+            }
+        }
+
+    }
+}
