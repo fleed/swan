@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "outputName": "Swan.Core",
+    "emitEntryPoint": false
+  },
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "Serilog.Extensions.Logging": "1.0.0",
+    "Serilog.Sinks.Literate": "2.0.0",
+    "Swan.Generators":{
+      "target": "project"
+    },
+    "Swan.Model":{
+      "target": "project"
+    }
+  },
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}

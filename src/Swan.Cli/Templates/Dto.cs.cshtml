@@ -1,0 +1,21 @@
+namespace @(this.Model.Namespace).Dto
+{
+    using System;
+
+    using Newtonsoft.Json;
+    
+    public partial class @this.Model.Name
+    {
+        [JsonProperty("id")]
+        public @this.Model.KeyType Id { get; set; }
+
+        [JsonProperty("createdOn")]
+        public DateTime CreatedOn { get; set; }
+
+        [JsonProperty("lastModifiedOn")]
+        public DateTime LastModifiedOn { get; set; }
+
+        [JsonProperty("version")]
+        public int Version { get; set; }
+    }
+}

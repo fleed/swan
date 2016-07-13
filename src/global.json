@@ -1,0 +1,3 @@
+{
+    "projects": ["Swan.Cli", "Swan.Core", "Swan.Generators", "Swan.Model"]
+}

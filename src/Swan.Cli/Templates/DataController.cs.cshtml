@@ -1,0 +1,51 @@
+namespace @this.Model.Namespace
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Mvc;
+
+    using Serilog;
+
+    using System.Net;
+
+    using Dto;
+
+    [Route("@this.Model.Route")]
+    public partial class @(this.Model.Name)Controller : ControllerBase
+    {
+        partial void OnGet();
+        
+        [HttpGet]
+        public async Task<IActionResult> GetAsync(@this.Model.KeyType id)
+        {
+            try
+            {
+                this.OnGet();
+                return this.Ok(new @(this.Model.Name)());
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "Error while getting");
+                return this.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> SetAsync(@this.Model.KeyType id, [FromBody]@this.Model.Name value)
+        {
+            try
+            {
+                this.OnGet();
+                return this.Ok("Understood, but not implemented");
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "Error while getting");
+                return this.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+    }
+}

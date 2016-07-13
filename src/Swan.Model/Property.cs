@@ -1,0 +1,26 @@
+namespace Swan.Model
+{
+    /// <summary>
+    /// Defines a property.
+    /// </summary>
+    public class Property
+    {
+        /// <summary>
+        /// Gets or sets the name of the property.
+        /// </summary>
+        /// <value>The name of the property.</value>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the property.
+        /// </summary>
+        /// <value>The type of the property.</value>
+        public string Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the property is required or not.
+        /// </summary>
+        /// <value><b>true</b> if the property is required; otherwise, <b>false</b>.</value>
+        public bool IsRequired { get; set; }
+    }
+}
