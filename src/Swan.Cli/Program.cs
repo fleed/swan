@@ -14,7 +14,7 @@
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Get help: SwanCli -h");
+            Console.WriteLine("Get help: swan -h");
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .WriteTo.LiterateConsole()
