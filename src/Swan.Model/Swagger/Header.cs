@@ -1,23 +1,22 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Namespace.cs" company="Swan Team">
+// <copyright file="Header.cs" company="Swan Team">
 //   Copyright © 2016 Swan Team. All rights reserved.
 // </copyright>
 // <summary>
-//   Defines the Namespace type.
+//   Defines the Header type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Swan.Model
+namespace Swan.Model.Swagger
 {
     /// <summary>
-    /// Defines a namespace.
+    /// Defines the header.
     /// </summary>
-    public class Namespace
+    public class Header : PartialSchema
     {
         /// <summary>
-        /// Gets or sets the entities.
+        /// Gets or sets the description.
         /// </summary>
-        /// <value>The entities. It might be <c>null</c>.</value>
-        public Entity[] Entities { get; set; }
+        public string Description { get; set; }
     }
 }

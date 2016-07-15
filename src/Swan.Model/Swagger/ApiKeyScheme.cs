@@ -1,23 +1,27 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Namespace.cs" company="Swan Team">
+// <copyright file="ApiKeyScheme.cs" company="Swan Team">
 //   Copyright © 2016 Swan Team. All rights reserved.
 // </copyright>
 // <summary>
-//   Defines the Namespace type.
+//   Defines the ApiKeyScheme type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Swan.Model
+namespace Swan.Model.Swagger
 {
     /// <summary>
-    /// Defines a namespace.
+    /// The API key scheme.
     /// </summary>
-    public class Namespace
+    public class ApiKeyScheme : SecurityScheme
     {
         /// <summary>
-        /// Gets or sets the entities.
+        /// Gets or sets the name.
         /// </summary>
-        /// <value>The entities. It might be <c>null</c>.</value>
-        public Entity[] Entities { get; set; }
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the input.
+        /// </summary>
+        public string In { get; set; }
     }
 }

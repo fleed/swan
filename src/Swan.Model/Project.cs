@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Project.cs" company="Swan Team">
+//   Copyright © 2016 Swan Team. All rights reserved.
+// </copyright>
+// <summary>
+//   Defines the Project type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace Swan.Model
 {
     /// <summary>

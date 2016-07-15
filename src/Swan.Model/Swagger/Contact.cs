@@ -1,29 +1,32 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Entity.cs" company="Swan Team">
+// <copyright file="Contact.cs" company="Swan Team">
 //   Copyright © 2016 Swan Team. All rights reserved.
 // </copyright>
 // <summary>
-//   Defines the Entity type.
+//   Defines the Contact type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Swan.Model
+namespace Swan.Model.Swagger
 {
     /// <summary>
-    /// Defines an entity.
+    /// The contact information.
     /// </summary>
-    public class Entity
+    public class Contact
     {
         /// <summary>
-        /// Gets or sets the name of the entity.
+        /// Gets or sets the name.
         /// </summary>
-        /// <value>The name of the entity.</value>
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the properties of the entity.
+        /// Gets or sets the url.
         /// </summary>
-        /// <value>The properties of the entity. It might be <c>null</c>.</value>
-        public Property[] Properties { get; set; }
+        public string Url { get; set; }
+
+        /// <summary>
+        /// Gets or sets the email.
+        /// </summary>
+        public string Email { get; set; }
     }
 }

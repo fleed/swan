@@ -1,23 +1,27 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Namespace.cs" company="Swan Team">
+// <copyright file="ExternalDocs.cs" company="Swan Team">
 //   Copyright © 2016 Swan Team. All rights reserved.
 // </copyright>
 // <summary>
-//   Defines the Namespace type.
+//   Defines the ExternalDocs type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Swan.Model
+namespace Swan.Model.Swagger
 {
     /// <summary>
-    /// Defines a namespace.
+    /// Defines external docs.
     /// </summary>
-    public class Namespace
+    public class ExternalDocs
     {
         /// <summary>
-        /// Gets or sets the entities.
+        /// Gets or sets the description.
         /// </summary>
-        /// <value>The entities. It might be <c>null</c>.</value>
-        public Entity[] Entities { get; set; }
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets the URL.
+        /// </summary>
+        public string Url { get; set; }
     }
 }
