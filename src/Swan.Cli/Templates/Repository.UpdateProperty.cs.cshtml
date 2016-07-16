@@ -1,0 +1,9 @@
+@using Swan.Generators.Models
+@model PropertyViewModel
+
+            if (existing.@(this.Model.Name) != converted.@(this.Model.Name))
+            {
+                changed = true;
+                existing.@(this.Model.Name) = converted.@(this.Model.Name);
+            }
+            

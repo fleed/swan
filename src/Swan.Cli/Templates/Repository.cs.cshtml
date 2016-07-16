@@ -1,8 +1,10 @@
 @using Humanizer
-@model Swan.Generators.DataControllerViewModel
+@using Swan.Generators.Models
+@model EntityViewModel
 namespace @this.Model.Namespace
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
 
@@ -25,18 +27,37 @@ namespace @this.Model.Namespace
             return entry.Entity.Convert();
         }
 
-        public async Task<@this.Model.Name> GetAsync(Guid id)
+        public async Task<@this.Model.Name> GetAsync(int id)
         {
             return (await this.DataContext.@(this.Model.Name.Pluralize()).FirstOrDefaultAsync(e => e.Id == id))?.Convert();
         }
 
-        public async Task<@this.Model.Name> UpdateAsync(@this.Model.Name value)
+        public async Task<IEnumerable<@this.Model.Name>> QueryAsync()
+        {
+            return (await this.DataContext.@(this.Model.Name.Pluralize()).ToListAsync())?.Convert();
+        }
+
+        public async Task<UpdateResult<@this.Model.Name>> UpdateAsync(@this.Model.Name value)
         {
             var existing = await this.DataContext.@(this.Model.Name.Pluralize()).FirstAsync(e => e.Id == value.Id);
+            var original = existing.Convert();
             var converted = value.Convert();
+            var changed = false;
+
+            @foreach (var property in this.Model.Properties)
+            {
+                await this.Html.RenderPartialAsync("Repository.UpdateProperty.cs.cshtml", property);
+            }
+
+            if (!changed)
+            {
+                return new UpdateResult<@this.Model.Name>(original);
+            }
+
             existing.LastModifiedOn = DateTime.UtcNow;
+            existing.Version++;
             await this.DataContext.SaveChangesAsync();
-            return existing.Convert();
+            return new UpdateResult<@this.Model.Name>(original, existing.Convert());
         }
     }
 }

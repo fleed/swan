@@ -1,0 +1,25 @@
+@using Swan.Generators.Models
+@model ProjectViewModel
+namespace @this.Model.Namespace
+{
+    public partial class UpdateResult<T>
+    {
+        public UpdateResult(T originalValue)
+        {
+            this.OriginalValue = originalValue;
+        }
+
+        public UpdateResult(T originalValue, T updatedValue)
+        {
+            this.OriginalValue = originalValue;
+            this.UpdatedValue = updatedValue;
+            this.Succeeded = true;
+        }
+
+        public bool Succeeded { get; }
+
+        public T OriginalValue { get; }
+
+        public T UpdatedValue { get; }
+    }
+}

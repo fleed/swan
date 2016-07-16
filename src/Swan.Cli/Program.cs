@@ -1,50 +1,81 @@
-﻿namespace Swan.Cli
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="Swan Team">
+//   Copyright © 2016 Swan Team. All rights reserved.
+// </copyright>
+// <summary>
+//   Defines the Program type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Swan.Cli
 {
     using System;
     using System.Linq;
-    using System.IO;
+
+    using Commands;
+
+    using Microsoft.Extensions.CommandLineUtils;
 
     using Serilog;
 
-    using Core;
-    using Generators;
-    using Model;
-
+    /// <summary>
+    /// Defines the entry point for the application.
+    /// </summary>
     public static class Program
     {
+        /// <summary>
+        /// Entry point for the application.
+        /// </summary>
+        /// <param name="args">
+        /// The args.
+        /// </param>
         public static void Main(string[] args)
         {
-            Console.WriteLine("Get help: swan -h");
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
-                .WriteTo.LiterateConsole()
-                .CreateLogger();
-            if (args.Length > 0 && args.Contains("gen"))
+            Log.Logger =
+                new LoggerConfiguration().Enrich.FromLogContext()
+                    .MinimumLevel.Verbose()
+                    .WriteTo.LiterateConsole()
+                    .CreateLogger();
+            try
             {
-                RenderTemplates();
-                return;
+                var application = new CommandLineApplication();
+                application.Command("generate", RenderTemplates);
+                var result = application.Execute(args);
+                Environment.Exit(result);
+            }
+            catch (Exception exception)
+            {
+                Log.Fatal(exception, "Fatality");
+                Environment.Exit(-1);
             }
         }
 
-        private static void RenderTemplates()
+        private static void RenderTemplates(CommandLineApplication application)
         {
-            Console.WriteLine("Rendering templates");
-            var project = new Project{
-                Namespace = "MyBuilderNamespace"
-            };
-            project.Namespaces = new [] {
-                    new Namespace {
-                        Entities = new [] {
-                            new Entity {
-                                Name = "MyEntity"
-                            }
-                    }
-                }
-            };
-            var builder = new ProjectBuilder(project)
-                .SetBasePath("/Users/francesco/Desktop/output");
-            var writer = builder.Build();
-            writer.WriteAsync().Wait();
+            application.Description = "Renders templates";
+            application.Option("-n", "Name", CommandOptionType.SingleValue);
+            application.Option("-o", "Output", CommandOptionType.SingleValue);
+            application.Option("-p", "Path to the Project file", CommandOptionType.SingleValue);
+            application.OnExecute(
+                async () =>
+                    {
+                        CommandBase command;
+                        try
+                        {
+                            var basePath = application.Options.Single(o => o.ShortName == "o").Value();
+                            var projectFilePath = application.Options.Single(o => o.ShortName == "p").Value();
+                            command =
+                                new RenderTemplatesCommand(basePath, projectFilePath);
+                        }
+                        catch (Exception exception)
+                        {
+                            Log.Error(exception, "Couldn't create the command.");
+                            return -1;
+                        }
+
+                        var executor = new CommandExecutor(command);
+                        return await executor.ExecuteAsync();
+                    });
         }
     }
 }

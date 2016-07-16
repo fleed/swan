@@ -1,3 +1,5 @@
+@using Swan.Generators.Models
+@model DataControllerViewModel
 namespace @this.Model.Namespace
 {
     using System;
@@ -15,9 +17,9 @@ namespace @this.Model.Namespace
     using Data;
 
     [Route("@this.Model.Route")]
-    public partial class @(this.Model.Name)Controller : ControllerBase
+    public partial class @(this.Model.ControllerName)Controller : ControllerBase
     {
-        public @(this.Model.Name)Controller(I@(this.Model.Name)Repository repository)
+        public @(this.Model.ControllerName)Controller(I@(this.Model.Name)Repository repository)
         {
             this.Repository = repository;
         }
@@ -26,17 +28,23 @@ namespace @this.Model.Namespace
 
         partial void OnAdd();
 
+        partial void OnDelete();
+
         partial void OnGet();
+
+        partial void OnPut();
         
         [HttpPost]
         public async Task<IActionResult> AddAsync([FromBody]@this.Model.Name value)
         {
+            Log.Debug("Request to add '@(this.Model.Name)', value: {@@value}", value);
             try
             {
                 this.OnAdd();
                 value.CreatedOn = DateTime.UtcNow;
                 value.Version = 1;
                 var added = await this.Repository.AddAsync(value);
+                Log.Information("Added '@(this.Model.Name)', value: {@@value}", added);
                 return this.Ok(added);
             }
             catch (Exception exception)
@@ -45,19 +53,56 @@ namespace @this.Model.Namespace
                 return this.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            Log.Debug("Request to delete '@(this.Model.Name)' with id {id}", id);
+            try
+            {
+                this.OnDelete();
+                return this.Ok("Understood, but not implemented");
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "Error while deleting '@(this.Model.Name)' with id {id}", id);
+                return this.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        
+        [HttpGet()]
+        public async Task<IActionResult> GetAsync()
+        {
+            Log.Trace("Request to get all items of type '@(this.Model.Name)'");
+            try
+            {
+                this.OnGet();
+                var items = (await this.Repository.QueryAsync()).ToList();
+                Log.Debug("Returning all items ({count}) of type '@(this.Model.Name)'", items.Count);
+                return this.Ok(items);
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "Error while getting all items of type '@(this.Model.Name)'");
+                return this.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
         
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(@this.Model.KeyType id)
+        public async Task<IActionResult> GetAsync(int id)
         {
+            Log.Trace("Request to get '@(this.Model.Name)' with id {id}", id);
             try
             {
                 this.OnGet();
                 var item = await this.Repository.GetAsync(id);
                 if (item == null)
                 {
+                    Log.Debug("Item '@(this.Model.Name)' with id {id} not found", id);
                     return this.NotFound($"Item with id '{id}' was not found");
                 }
 
+                Log.Debug("Item '@(this.Model.Name)' with id {id} not found", id);
                 return this.Ok(item);
             }
             catch (Exception exception)
@@ -68,20 +113,30 @@ namespace @this.Model.Namespace
         }
         
         [HttpPut("{id}")]
-        public async Task<IActionResult> GetAsync(@this.Model.KeyType id, [FromBody]@this.Model.Name value)
+        public async Task<IActionResult> PutAsync(int id, [FromBody]@this.Model.Name value)
         {
+            Log.Debug("Request to update '@(this.Model.Name)' with id {id} and value {@@value}", id, value);
             try
             {
-                this.OnGet();
+                this.OnPut();
+                value.Id = id;
                 var item = await this.Repository.GetAsync(id);
                 if (item == null)
                 {
+                    Log.Debug("Item '@(this.Model.Name)' with id {id} not found to be updated", id);
                     return this.NotFound($"Item with id '{id}' was not found");
                 }
 
                 value.Id = id;
                 var updated = await this.Repository.UpdateAsync(value);
-                return this.Ok(updated);
+                if (!updated.Succeeded)
+                {
+                    Log.Information("Item '@(this.Model.Name)' with id {id} wasn't changed", id);
+                    return this.StatusCode((int)HttpStatusCode.NotModified);
+                }
+
+                Log.Information("Item '@(this.Model.Name)' updated to value {@@value}", updated.UpdatedValue);
+                return this.Ok(updated.UpdatedValue);
             }
             catch (Exception exception)
             {

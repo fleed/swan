@@ -1,6 +1,6 @@
 @using Humanizer
-@using Swan.Generators
-@model DataContextViewModel
+@using Swan.Generators.Models
+@model ProjectViewModel
 namespace @this.Model.Namespace
 {
     using Microsoft.EntityFrameworkCore;
@@ -11,12 +11,24 @@ namespace @this.Model.Namespace
             : base(options)
         {
         }
+
         @{
             foreach (var entity in this.Model.Entities)
             {
-                await Html.RenderPartialAsync("DataContext.DbSet", entity);
+                await this.Html.RenderPartialAsync("DataContext.DbSet", entity);
             }
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+        @{
+            foreach (var entity in this.Model.Entities)
+            {
+                await this.Html.RenderPartialAsync("DataContext.ModelBuilder", entity);
+            }
+        }
+
+        }
     }
 }

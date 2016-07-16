@@ -1,3 +1,5 @@
+@using Swan.Generators.Models
+@model ProjectViewModel
 namespace @this.Model.Namespace
 {
     using System.IO;
@@ -8,6 +10,7 @@ namespace @this.Model.Namespace
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
     using Microsoft.EntityFrameworkCore;
 
     using Serilog;
@@ -30,19 +33,49 @@ namespace @this.Model.Namespace
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvcCore().AddJsonFormatters();
+            services.AddOptions();
+    
+            services.Configure<Settings>(Configuration.GetSection("Settings"));
+            
+            services.AddSingleton<IConfiguration>(Configuration);
+
+            services.AddMvc();
+            services.AddSwaggerGen();
+
             var connection = this.Configuration.GetConnectionString("Default");
             services.AddDbContext<DataContext>(options => options.UseSqlite(connection));
 
-            services.AddScoped<IMyEntityRepository, MyEntityRepository>();
+            @foreach (var entity in this.Model.Entities)
+            {
+                await this.Html.RenderPartialAsync("Startup.AddRepository.cs", entity);
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IOptions<Settings> settings)
         {
+            var loggerConfiguration = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .MinimumLevel.Verbose()
+                .WriteTo.LiterateConsole();
+
+            if (settings.Value.EnableSeqLogging)
+            {
+                loggerConfiguration = loggerConfiguration.WriteTo.Seq(settings.Value.SeqLoggingUrl);
+            }
+
+            Log.Logger = loggerConfiguration.CreateLogger();
+
             //app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
-            loggerFactory.AddSerilog();
+            app
+                .UseSwagger()
+                .UseSwaggerUi();
+            if (settings.Value.EnableMvcLogging)
+            {
+                loggerFactory.AddSerilog();
+            }
+
             app.UseMvc();
         }
     }

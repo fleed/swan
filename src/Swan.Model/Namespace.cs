@@ -9,6 +9,8 @@
 
 namespace Swan.Model
 {
+    using Newtonsoft.Json;
+
     /// <summary>
     /// Defines a namespace.
     /// </summary>
@@ -18,6 +20,7 @@ namespace Swan.Model
         /// Gets or sets the entities.
         /// </summary>
         /// <value>The entities. It might be <c>null</c>.</value>
+        [JsonProperty("entities")]
         public Entity[] Entities { get; set; }
     }
 }

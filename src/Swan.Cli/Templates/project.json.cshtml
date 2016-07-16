@@ -2,7 +2,7 @@
   "version": "1.0.0-*",
   "buildOptions": {
     "emitEntryPoint": true,
-    "outputName": "@this.Model.Namespace"
+    "outputName": "@this.Model.OutputName"
   },
   "dependencies": {
     "Microsoft.NETCore.App": {
@@ -11,8 +11,7 @@
     },
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Hosting": "1.0.0",
-    "Microsoft.AspNetCore.Mvc.Core": "1.0.0",
-    "Microsoft.AspNetCore.Mvc.Formatters.Json": "1.0.0",
+    "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
     "Microsoft.AspNetCore.StaticFiles": "1.0.0",
     "Microsoft.EntityFrameworkCore": "1.0.0",
@@ -23,7 +22,10 @@
     },
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Serilog.Extensions.Logging": "1.0.0",
-    "Serilog.Sinks.Literate": "2.0.0"
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+    "Serilog.Sinks.Literate": "2.0.0",
+    "Serilog.Sinks.Seq": "2.0.0",
+    "Swashbuckle": "6.0.0-beta901"
   },
   "frameworks": {
     "netcoreapp1.0": {

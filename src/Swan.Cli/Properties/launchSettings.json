@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Swan.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "-o \"C:\\Users\\lef\\Desktop\\output\""
+    }
+  }
+}

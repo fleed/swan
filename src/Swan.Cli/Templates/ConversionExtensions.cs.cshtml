@@ -1,29 +1,22 @@
+@model Swan.Generators.Models.ProjectViewModel
 namespace @this.Model.Namespace
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    
     using Entities;
 
-    using DtoMyEntity = Dto.MyEntity;
+    @foreach(var entity in this.Model.Entities)
+    { 
+    @:using Dto@(entity.Name) = Dto.@entity.Name;
+    }
 
     public static class ConvertionExtensions
     {
-        public static MyEntity Convert(this DtoMyEntity value)
+        @foreach (var entity in this.Model.Entities)
         {
-            return new MyEntity
-            {
-                Id = value.Id,
-                CreatedOn = value.CreatedOn,
-                LastModifiedOn = value.LastModifiedOn
-            };
+            await Html.RenderPartialAsync("ConversionExtensions.Convert.cs", entity);
         }
 
-        public static DtoMyEntity Convert(this MyEntity value)
-        {
-            return new DtoMyEntity
-            {
-                Id = value.Id,
-                CreatedOn = value.CreatedOn,
-                LastModifiedOn = value.LastModifiedOn
-            };
-        }
     }
 }

@@ -1,0 +1,4 @@
+@using Swan.Generators.Models
+@model EntityViewModel
+
+            services.AddScoped<I@(this.Model.Name)Repository, @(this.Model.Name)Repository>();

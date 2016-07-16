@@ -1,4 +1,5 @@
-@model string
 @using Humanizer
+@using Swan.Generators.Models
+@model EntityViewModel
 
-        public DbSet<@this.Model> @this.Model.Pluralize() { get; set; }
+        public DbSet<@this.Model.Name> @this.Model.Name.Pluralize() { get; set; }
