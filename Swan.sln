@@ -13,6 +13,11 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Swan.Cli", "src\Swan.Cli\Sw
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F0ED1806-22BC-4FD9-AA84-8FF9D0F0A57B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{8EC75BA3-06B4-450C-9C34-A0D32CE800AB}"
+	ProjectSection(SolutionItems) = preProject
+		build\build.ps1 = build\build.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

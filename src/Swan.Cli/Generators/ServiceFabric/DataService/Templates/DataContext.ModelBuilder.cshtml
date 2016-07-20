@@ -1,0 +1,5 @@
+@using Humanizer
+@using Swan.Generators.Models
+@model EntityViewModel
+
+            modelBuilder.Entity<@(this.Model.Name)>().Property(e => e.Id).HasDefaultValueSql("1");

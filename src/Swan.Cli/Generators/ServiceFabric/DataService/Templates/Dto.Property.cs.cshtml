@@ -1,0 +1,7 @@
+@using Humanizer
+@using Swan.Generators.Models
+@model PropertyViewModel
+
+
+        [JsonProperty("@(this.Model.Name.Camelize())")]
+        public @this.Model.Type @this.Model.Name { get; set; }

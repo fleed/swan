@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="@(this.Model.OutputName)" Version="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <ServiceTypes>
+    <StatelessServiceType ServiceTypeName="@(this.Model.OutputName)Type"/>
+  </ServiceTypes>
+  <CodePackage Name="code" Version="1.0.0">
+    <EntryPoint>
+      <ExeHost>
+        <Program>@(this.Model.OutputName).exe</Program>
+        <Arguments>-sf</Arguments>
+        <WorkingFolder>CodeBase</WorkingFolder>
+      </ExeHost>
+    </EntryPoint>
+  </CodePackage>
+  <Resources>
+    <Endpoints>
+      <Endpoint Name="@(this.Model.OutputName)TypeEndpoint" Protocol="http" Type="Input" />
+    </Endpoints>
+  </Resources>
+</ServiceManifest>

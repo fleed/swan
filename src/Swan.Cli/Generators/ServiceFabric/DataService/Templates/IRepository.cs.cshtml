@@ -1,0 +1,21 @@
+@using Swan.Generators.Models
+@model EntityViewModel
+namespace @this.Model.Namespace
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
+    using Dto;
+
+    public partial interface I@(this.Model.Name)Repository
+    {
+        Task<@this.Model.Name> AddAsync(@this.Model.Name value);
+
+        Task<@this.Model.Name> GetAsync(int id); 
+
+        Task<IEnumerable<@this.Model.Name>> QueryAsync(); 
+
+        Task<UpdateResult<@this.Model.Name>> UpdateAsync(@this.Model.Name value); 
+    }
+}

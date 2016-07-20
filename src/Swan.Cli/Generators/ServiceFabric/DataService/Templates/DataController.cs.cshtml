@@ -3,7 +3,6 @@
 namespace @(this.Model.Namespace).Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -37,14 +36,14 @@ namespace @(this.Model.Namespace).Controllers
         [HttpPost]
         public async Task<IActionResult> AddAsync([FromBody]@this.Model.Name value)
         {
-            Log.Debug("Request to add '@(this.Model.Name)', value: {@@value}", value);
+            Log.Verbose("Request to add '@(this.Model.Name)', value: {@@value}", value);
             try
             {
                 this.OnAdd();
                 value.CreatedOn = DateTime.UtcNow;
                 value.Version = 1;
                 var added = await this.Repository.AddAsync(value);
-                Log.Information("Added '@(this.Model.Name)', value: {@@value}", added);
+                Log.Debug("Added '@(this.Model.Name)', value: {@@value}", added);
                 return this.Ok(added);
             }
             catch (Exception exception)
@@ -57,7 +56,7 @@ namespace @(this.Model.Namespace).Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            Log.Debug("Request to delete '@(this.Model.Name)' with id {id}", id);
+            Log.Verbose("Request to delete '@(this.Model.Name)' with id {id}", id);
             try
             {
                 this.OnDelete();
@@ -70,7 +69,7 @@ namespace @(this.Model.Namespace).Controllers
             }
         }
         
-        [HttpGet()]
+        [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
             Log.Verbose("Request to get all items of type '@(this.Model.Name)'");
@@ -115,7 +114,7 @@ namespace @(this.Model.Namespace).Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsync(int id, [FromBody]@this.Model.Name value)
         {
-            Log.Debug("Request to update '@(this.Model.Name)' with id {id} and value {@@value}", id, value);
+            Log.Verbose("Request to update '@(this.Model.Name)' with id {id} and value {@@value}", id, value);
             try
             {
                 this.OnPut();
@@ -135,7 +134,7 @@ namespace @(this.Model.Namespace).Controllers
                     return this.StatusCode((int)HttpStatusCode.NotModified);
                 }
 
-                Log.Information("Item '@(this.Model.Name)' updated to value {@@value}", updated.UpdatedValue);
+                Log.Debug("Item '@(this.Model.Name)' updated to value {@@value}", updated.UpdatedValue);
                 return this.Ok(updated.UpdatedValue);
             }
             catch (Exception exception)

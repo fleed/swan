@@ -1,0 +1,63 @@
+@using Humanizer
+@using Swan.Generators.Models
+@model EntityViewModel
+namespace @this.Model.Namespace
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+
+    using Dto;
+    using DataContext = Entities.DataContext;
+    
+    public partial class @(this.Model.Name)Repository : I@(this.Model.Name)Repository
+    {
+        public @(this.Model.Name)Repository(DataContext dataContext)
+        {
+            this.DataContext = dataContext;
+        }
+
+        public DataContext DataContext { get; }
+
+        public async Task<@this.Model.Name> AddAsync(@this.Model.Name value)
+        {
+            var entry = this.DataContext.@(this.Model.Name.Pluralize()).Add(value.Convert());
+            await this.DataContext.SaveChangesAsync();
+            return entry.Entity.Convert();
+        }
+
+        public async Task<@this.Model.Name> GetAsync(int id)
+        {
+            return (await this.DataContext.@(this.Model.Name.Pluralize()).FirstOrDefaultAsync(e => e.Id == id))?.Convert();
+        }
+
+        public async Task<IEnumerable<@this.Model.Name>> QueryAsync()
+        {
+            return (await this.DataContext.@(this.Model.Name.Pluralize()).ToListAsync())?.Convert();
+        }
+
+        public async Task<UpdateResult<@this.Model.Name>> UpdateAsync(@this.Model.Name value)
+        {
+            var existing = await this.DataContext.@(this.Model.Name.Pluralize()).FirstAsync(e => e.Id == value.Id);
+            var original = existing.Convert();
+            var converted = value.Convert();
+            var changed = false;
+
+            @foreach (var property in this.Model.Properties)
+            {
+                await this.Html.RenderPartialAsync("Repository.UpdateProperty.cs.cshtml", property);
+            }
+
+            if (!changed)
+            {
+                return new UpdateResult<@this.Model.Name>(original);
+            }
+
+            existing.LastModifiedOn = DateTime.UtcNow;
+            existing.Version++;
+            await this.DataContext.SaveChangesAsync();
+            return new UpdateResult<@this.Model.Name>(original, existing.Convert());
+        }
+    }
+}

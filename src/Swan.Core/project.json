@@ -8,7 +8,7 @@
     "NETStandard.Library": "1.6.0",
     "Serilog.Extensions.Logging": "1.0.0",
     "Serilog.Sinks.Literate": "2.0.0",
-    "Swan.Generators":{
+    "Swan.Generators": {
       "target": "project"
     },
     "Swan.Model":{
@@ -17,7 +17,7 @@
   },
   "frameworks": {
     "netstandard1.6": {
-      "imports": "dnxcore50"
+      "imports": [ "dnxcore50", "portable-net45+win8+wp8+wpa81" ]
     }
   }
 }

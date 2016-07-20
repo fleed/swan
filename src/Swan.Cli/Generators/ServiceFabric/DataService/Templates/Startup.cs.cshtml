@@ -4,9 +4,6 @@ namespace @this.Model.Namespace
 {
     using System.IO;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Formatters.Json;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -25,6 +22,7 @@ namespace @this.Model.Namespace
             this.Configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.user.json", true)
                 .Build();
         }
 
@@ -43,7 +41,7 @@ namespace @this.Model.Namespace
             services.AddSwaggerGen();
 
             var connection = this.Configuration.GetConnectionString("Default");
-            services.AddDbContext<DataContext>(options => options.UseSqlite(connection));
+            services.AddDbContext<DataContext>(options => options.UseSqlServer(connection));
 
             @foreach (var entity in this.Model.Entities)
             {
@@ -58,11 +56,13 @@ namespace @this.Model.Namespace
                 .ReadFrom.Configuration(this.Configuration)
                 .CreateLogger();
 
-            //app.UseDeveloperExceptionPage();
+            app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
-            app
-                .UseSwagger()
-                .UseSwaggerUi();
+            if (settings.Value.EnableSwagger)
+            {
+                app.UseSwagger().UseSwaggerUi();
+            }
+
             if (settings.Value.EnableMvcLogging)
             {
                 loggerFactory.AddSerilog();

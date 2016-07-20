@@ -3,21 +3,25 @@
 namespace @(this.Model.Namespace)
 {
     using System;
+
+    using Newtonsoft.Json;
     
     public partial class @this.Model.Name
     {
+        [JsonProperty("id")]
         public int Id { get; set; }
 
+        [JsonProperty("createdOn")]
         public DateTime CreatedOn { get; set; }
 
+        [JsonProperty("lastModifiedOn")]
         public DateTime? LastModifiedOn { get; set; }
 
+        [JsonProperty("version")]
         public int Version { get; set; }
-
         @foreach (var property in this.Model.Properties)
         {
-            await this.Html.RenderPartialAsync("Entity.Property.cs", property);
+            await this.Html.RenderPartialAsync("Dto.Property.cs", property);
         }
-
     }
 }

@@ -11,7 +11,7 @@ namespace @(this.Model.Namespace).Data
     @:using Dto@(entity.Name) = Dto.@entity.Name;
     }
 
-    public static class ConvertionExtensions
+    public static partial class ConvertionExtensions
     {
         @foreach (var entity in this.Model.Entities)
         {

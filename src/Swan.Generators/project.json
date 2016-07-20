@@ -14,11 +14,12 @@
     "Serilog": "2.0.0",
     "Swan.Model": {
       "target": "project"
-    }
+    },
+    "RazorSharp.Core": "1.0.6"
   },
   "frameworks": {
     "netstandard1.6": {
-      "imports": "dnxcore50"
+      "imports": [ "dnxcore50", "portable-net45+win8+wp8+wpa81" ]
     }
   }
 }

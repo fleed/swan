@@ -32,9 +32,11 @@ namespace Swan.Cli
         public static void Main(string[] args)
         {
             Log.Logger =
-                new LoggerConfiguration().Enrich.FromLogContext()
+                new LoggerConfiguration()
+                    .Enrich.FromLogContext()
                     .MinimumLevel.Verbose()
                     .WriteTo.LiterateConsole()
+                    .WriteTo.Seq("http://localhost:5341/")
                     .CreateLogger();
             try
             {

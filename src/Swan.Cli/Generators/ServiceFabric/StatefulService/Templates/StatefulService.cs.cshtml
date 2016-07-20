@@ -1,0 +1,63 @@
+@using Swan.Generators.Models
+@model ServiceViewModel
+namespace @this.Model.Namespace
+{
+    using System.Collections.Generic;
+    using System.Fabric;
+
+    using Microsoft.ServiceFabric.AspNetCore.Hosting;
+    using Microsoft.ServiceFabric.Data;
+    using Microsoft.ServiceFabric.Services.Communication.Runtime;
+    using Microsoft.ServiceFabric.Services.Runtime;
+
+    public partial class @this.Model.Name : StatefulService, I@(this.Model.Name)
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="@this.Model.Name"/> class.
+        /// </summary>
+        /// <param name="serviceContext">
+        /// The service context.
+        /// </param>
+        /// <param name="communicationContext">
+        /// The communication context.
+        /// </param>
+        public @(this.Model.Name)(
+            StatefulServiceContext serviceContext,
+            AspNetCoreCommunicationContext communicationContext)
+            : base(serviceContext)
+        {
+            this.CommunicationContext = communicationContext;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="@this.Model.Name"/> class.
+        /// </summary>
+        /// <param name="serviceContext">
+        /// The service context.
+        /// </param>
+        /// <param name="reliableStateManagerReplica">
+        /// The reliable state manager replica.
+        /// </param>
+        public @(this.Model.Name)(
+            StatefulServiceContext serviceContext,
+            IReliableStateManagerReplica reliableStateManagerReplica)
+            : base(serviceContext, reliableStateManagerReplica)
+        {
+        }
+
+        /// <summary>
+        /// Gets the communication context.
+        /// </summary>
+        public AspNetCoreCommunicationContext CommunicationContext { get; }
+
+
+        /// <inheritdoc />
+        protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
+        {
+            return new[]
+                       {
+                           new ServiceReplicaListener(_ => this.CommunicationContext.CreateCommunicationListener(this))
+                       };
+        }
+    }
+}

@@ -12,16 +12,20 @@ namespace Swan.Core
     using System;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
+    using System.Runtime.Loader;
     using System.Threading.Tasks;
 
-    using Generators;
     using Generators.Models;
 
     using Humanizer;
 
     using Model;
 
+    using RazorSharp.Core;
+
     using Serilog;
+    using Microsoft.CodeAnalysis;
 
     /// <summary>
     /// The project writer.
@@ -37,7 +41,7 @@ namespace Swan.Core
         /// <param name="basePath">
         /// The base path where the project should be written.
         /// </param>
-        internal ProjectWriter(Project project, string basePath)
+        internal ProjectWriter(Model.Project project, string basePath)
         {
             if (project == null)
             {
@@ -56,7 +60,7 @@ namespace Swan.Core
         /// <summary>
         /// Gets the Swan project.
         /// </summary>
-        public Project Project { get; }
+        public Model.Project Project { get; }
 
         /// <summary>
         /// Gets the base path.
@@ -119,7 +123,6 @@ namespace Swan.Core
             string folderPath = null,
             bool clearFolder = false)
         {
-            var generator = new Generator();
             var directory = Path.Combine(this.BasePath, folderPath ?? string.Empty);
             var directoryInfo = new DirectoryInfo(directory);
             if (clearFolder && directoryInfo.Exists)
@@ -128,8 +131,20 @@ namespace Swan.Core
             }
 
             var outputPath = Path.Combine(directoryInfo.FullName, fileName);
-            var content = await generator.GenerateAsync(templateName, model);
-            await this.WriteFileAsync(outputPath, content);
+            var templateProcessorOptions = new TemplateProcessorOptions
+                                               {
+                                                    ApplicationName = "Swan.Generators",
+                                                   TemplatesFolder =
+                                                       @"D:\git\swan\src\Swan.Cli"
+            };
+            var generator = new Generator();
+            Log.Debug(
+                "Generating template using options {@options}, name {name}, model {@model} and output path '{output}'",
+                templateProcessorOptions,
+                templateName,
+                model,
+                outputPath);
+            await generator.GenerateAsync(templateProcessorOptions, templateName, model, outputPath);
         }
 
         private async Task WriteProgramAsync()
@@ -158,8 +173,37 @@ namespace Swan.Core
 
         private async Task WriteAppsettingsAsync()
         {
-            var model = new DataControllerViewModel { Namespace = this.Project.Namespace };
-            await this.WriteContentAsync("appsettings.json", model, "appsettings.json");
+            try
+            {
+                var location = Assembly.Load(new AssemblyName("RazorSharp.Core")).Location;
+                var reference =
+                    MetadataReference.CreateFromFile(location);
+                Log.Information("Loaded reference to RazorSharp.Core with location {location}", location);
+                var template = new TemplateManifest
+                                   {
+                                       Name = "UnitDataService",
+                                       Path = @"D:\git\swan\src\Swan.Cli",
+                                       TargetRoot = this.BasePath,
+                                       AdditionalReferences = new[] { reference },
+                                       Items =
+                                           new[]
+                                               {
+                                                   new TemplateItem
+                                                       {
+                                                           Name = "appsettings.json",
+                                                           OutputName = "appsettings.json"
+                                                       }
+                                               }
+                                   };
+                var engine = new Engine();
+                await engine.ProcessAsync(template);
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "Couldn't generate appsettings");
+            }
+            //var model = new DataControllerViewModel { Namespace = this.Project.Namespace };
+            //await this.WriteContentAsync("appsettings.json", model, "appsettings.json");
         }
 
         private async Task WriteHostingAsync()
@@ -249,28 +293,6 @@ namespace Swan.Core
             var model = entity.Convert(this.Project.Namespace);
             var fileName = string.Format("{0}.generated.cs", model.Name);
             await this.WriteContentAsync("Dto.cs", model, fileName, "Dto");
-        }
-
-        private async Task WriteFileAsync(string path, string content)
-        {
-            var fileInfo = new FileInfo(path);
-            if (fileInfo.Exists)
-            {
-                fileInfo.Delete();
-            }
-            else if (!fileInfo.Directory.Exists)
-            {
-                fileInfo.Directory.Create();
-            }
-
-            Log.Information("Writing file {path}", path);
-            using (var file = File.OpenWrite(path))
-            {
-                using (var streamWriter = new StreamWriter(file))
-                {
-                    await streamWriter.WriteAsync(content);
-                }
-            }
         }
     }
 }

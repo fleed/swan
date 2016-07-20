@@ -1,0 +1,57 @@
+@using Humanizer
+@using Swan.Generators.Models
+@model EntityViewModel
+namespace @this.Model.Namespace
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    
+    using Microsoft.Azure.Documents.Client;
+    using Microsoft.Azure.Documents.Linq;
+
+    using Dto;
+    
+    public partial class @(this.Model.Name)Repository : I@(this.Model.Name)Repository
+    {
+        private const string EndpointUri = "";
+        private const string PrimaryKey = "";
+        private static readonly string DatabaseId = "EmployeeDb";
+        private static readonly string CollectionId = "Employees";
+
+        public @(this.Model.Name)Repository(DocumentClient client)
+        {
+            this.Client = client;
+        }
+
+        public DocumentClient Client { get; }
+
+        public async Task<@this.Model.Name> AddAsync(@this.Model.Name value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<@this.Model.Name> GetAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<@this.Model.Name>> QueryAsync()
+        {
+            var uri = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
+            var query = this.Client.CreateDocumentQuery<@this.Model.Name>(uri).AsDocumentQuery();
+            var results = new List<@this.Model.Name>();
+            while (query.HasMoreResults)
+            {
+                results.AddRange(await query.ExecuteNextAsync<@this.Model.Name>());
+            }
+
+            return results;
+        }
+
+        public async Task<UpdateResult<@this.Model.Name>> UpdateAsync(@this.Model.Name value)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

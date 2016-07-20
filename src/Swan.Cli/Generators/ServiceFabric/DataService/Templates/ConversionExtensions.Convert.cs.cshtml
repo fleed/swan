@@ -1,0 +1,46 @@
+@model Swan.Generators.Models.EntityViewModel
+        public static @this.Model.Name Convert(this Dto@(this.Model.Name) value)
+        {
+            var item = new @(this.Model.Name)
+            {
+                Id = value.Id,
+                CreatedOn = value.CreatedOn,
+                LastModifiedOn = value.LastModifiedOn,
+                Version = value.Version
+            };
+
+            @foreach (var property in this.Model.Properties)
+            {
+                await this.Html.RenderPartialAsync("ConversionExtensions.Convert.Property.cs", property);
+            }
+
+            return item;
+        }
+
+        public static Dto@(this.Model.Name) Convert(this @this.Model.Name value)
+        {
+            var item = new Dto@(this.Model.Name)
+            {
+                Id = value.Id,
+                CreatedOn = value.CreatedOn,
+                LastModifiedOn = value.LastModifiedOn,
+                Version = value.Version
+            };
+
+            @foreach (var property in this.Model.Properties)
+            {
+                await this.Html.RenderPartialAsync("ConversionExtensions.Convert.Property.cs", property);
+            }
+
+            return item;
+        }
+
+        public static IEnumerable<@this.Model.Name> Convert(this IEnumerable<Dto@(this.Model.Name)> values)
+        {
+            return values.Select(Convert);
+        }
+
+        public static IEnumerable<Dto@(this.Model.Name)> Convert(this IEnumerable<@(this.Model.Name)> values)
+        {
+            return values.Select(Convert);
+        }

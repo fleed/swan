@@ -1,0 +1,54 @@
+﻿@using Swan.Generators.Models
+@model ProjectViewModel
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="@(this.Model.Name).cs" company="Gorba AG">
+//   Copyright © 2011-2016 Gorba AG. All rights reserved.
+// </copyright>
+// <summary>
+//   Defines the @(this.Model.Name) type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace @this.Model.Namespace
+{
+    using System.Collections.Generic;
+    using System.Fabric;
+
+    using Microsoft.ServiceFabric.AspNetCore.Hosting;
+    using Microsoft.ServiceFabric.Services.Communication.Runtime;
+    using Microsoft.ServiceFabric.Services.Runtime;
+
+    /// <summary>
+    /// The stateless data service.
+    /// </summary>
+    public class @(this.Model.Name) : StatelessService
+    {
+        private readonly AspNetCoreCommunicationContext communicationContext;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="@(this.Model.Name)"/> class.
+        /// </summary>
+        /// <param name="serviceContext">
+        /// The service context.
+        /// </param>
+        /// <param name="communicationContext">
+        /// The communication context.
+        /// </param>
+        public @(this.Model.Name)(
+            StatelessServiceContext serviceContext,
+            AspNetCoreCommunicationContext communicationContext)
+            : base(serviceContext)
+        {
+            this.communicationContext = communicationContext;
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
+        {
+            return new[]
+                       {
+                           new ServiceInstanceListener(_ => this.communicationContext.CreateCommunicationListener(this))
+                       };
+        }
+    }
+}

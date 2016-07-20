@@ -11,7 +11,6 @@ namespace @(this.Model.Namespace).Entities
             : base(options)
         {
         }
-
         @{
             foreach (var entity in this.Model.Entities)
             {
@@ -21,14 +20,12 @@ namespace @(this.Model.Namespace).Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
         @{
             foreach (var entity in this.Model.Entities)
             {
                 await this.Html.RenderPartialAsync("DataContext.ModelBuilder", entity);
             }
         }
-
         }
     }
 }

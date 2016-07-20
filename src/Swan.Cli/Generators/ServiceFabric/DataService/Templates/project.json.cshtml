@@ -2,34 +2,41 @@
   "version": "1.0.0-*",
   "buildOptions": {
     "emitEntryPoint": true,
-    "outputName": "@this.Model.OutputName"
+    "outputName": "@this.Model.OutputName",
+    "preserveCompilationContext": true
+  },
+  "publishOptions": {
+    "includeFiles": ["appsettings.json", "hosting.json"]
   },
   "dependencies": {
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.0"
-    },
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Hosting": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
     "Microsoft.AspNetCore.StaticFiles": "1.0.0",
     "Microsoft.EntityFrameworkCore": "1.0.0",
-    "Microsoft.EntityFrameworkCore.Sqlite": "1.0.0",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
     "Microsoft.EntityFrameworkCore.Design": {
       "version": "1.0.0-preview2-final",
       "type": "build" 
     },
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
-    "Serilog.Extensions.Logging": "1.0.0",
+    "Serilog.Extensions.Logging": "1.0.0", 
+    "Nito.AsyncEx": "3.0.1",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
     "Serilog.Sinks.Literate": "2.0.0",
     "Serilog.Sinks.Seq": "2.0.0",
     "Serilog.Settings.Configuration": "2.0.0",
-    "Swashbuckle": "6.0.0-beta901"
+    "Swashbuckle": "6.0.0-beta901",
+    "Microsoft.ServiceFabric": "5.1.150",
+    "Microsoft.ServiceFabric.AspNetCore.Hosting": {
+      "target": "project"
+    },
+    "Microsoft.ServiceFabric.Services": "2.1.150",
+    "Microsoft.Azure.DocumentDB": "1.9.0"
   },
   "frameworks": {
-    "netcoreapp1.0": {
+    "net452": {
       "imports": ["dnxcore50"]
     }
   },

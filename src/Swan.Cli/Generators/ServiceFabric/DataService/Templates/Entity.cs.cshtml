@@ -13,7 +13,6 @@ namespace @(this.Model.Namespace)
         public DateTime? LastModifiedOn { get; set; }
 
         public int Version { get; set; }
-
         @foreach (var property in this.Model.Properties)
         {
             await this.Html.RenderPartialAsync("Entity.Property.cs", property);

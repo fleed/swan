@@ -9,10 +9,11 @@
 
 namespace Swan.Cli.Commands
 {
-    using System;
     using System.Threading.Tasks;
 
     using Core;
+
+    using Serilog;
 
     /// <summary>
     /// Command used to generate a solution.
@@ -45,7 +46,10 @@ namespace Swan.Cli.Commands
         /// <inheritdoc />
         public override async Task ExecuteAsync()
         {
-            Console.WriteLine("Rendering templates");
+            Log.Information(
+                "Rendering templates using project '{project}' and base path '{path}'",
+                this.ProjectFilePath,
+                this.BasePath);
             var builder =
                 new ProjectBuilder()
                     .SetBasePath(this.BasePath)
